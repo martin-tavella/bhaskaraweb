@@ -1,0 +1,448 @@
+---
+// BhaskaraCalculator.astro - Componente de renderizado para la calculadora de Bhaskara
+---
+
+<div class="w-full max-w-2xl bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden transition-all">
+  <!-- Encabezado de la tarjeta -->
+  <div class="bg-gradient-to-r from-blue-600 to-indigo-700 px-6 py-5 text-white text-center">
+    <div class="inline-flex items-center justify-center p-2 bg-white/10 rounded-xl mb-2 backdrop-blur-xs">
+      <span class="font-mono text-sm tracking-wider font-semibold">ax² + bx + c = 0</span>
+    </div>
+    <h2 class="text-xl sm:text-2xl font-bold tracking-tight">Calculadora Cuadrática</h2>
+    <p class="text-blue-100 text-xs sm:text-sm mt-1">Calcula las soluciones en números reales o complejos con resultados exactos o decimales.</p>
+  </div>
+
+  <div class="p-6 sm:p-8 space-y-6">
+    <!-- Formulario principal -->
+    <form id="bhaskara-form" class="space-y-6" novalidate>
+      <!-- Inputs a, b, c -->
+      <div>
+        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
+          Coeficientes de la ecuación
+        </label>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+          <!-- Coeficiente a -->
+          <div class="relative">
+            <label for="input-a" class="block text-xs font-medium text-slate-700 mb-1">
+              Valor de <span class="font-bold text-blue-600 font-mono">a</span> (cuadrático)
+            </label>
+            <input
+              type="number"
+              step="any"
+              id="input-a"
+              name="a"
+              required
+              placeholder="Ej: 1"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-hidden font-mono text-slate-800 transition"
+            />
+          </div>
+
+          <!-- Coeficiente b -->
+          <div class="relative">
+            <label for="input-b" class="block text-xs font-medium text-slate-700 mb-1">
+              Valor de <span class="font-bold text-indigo-600 font-mono">b</span> (lineal)
+            </label>
+            <input
+              type="number"
+              step="any"
+              id="input-b"
+              name="b"
+              required
+              placeholder="Ej: -5"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-hidden font-mono text-slate-800 transition"
+            />
+          </div>
+
+          <!-- Coeficiente c -->
+          <div class="relative">
+            <label for="input-c" class="block text-xs font-medium text-slate-700 mb-1">
+              Valor de <span class="font-bold text-violet-600 font-mono">c</span> (independiente)
+            </label>
+            <input
+              type="number"
+              step="any"
+              id="input-c"
+              name="c"
+              required
+              placeholder="Ej: 6"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-hidden font-mono text-slate-800 transition"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Vista previa de la ecuación ingresada -->
+      <div class="bg-slate-50 border border-slate-200/80 rounded-xl px-4 py-2.5 text-center">
+        <span class="text-xs text-slate-500 mr-2">Ecuación actual:</span>
+        <span id="equation-preview" class="font-mono font-semibold text-slate-800 text-sm sm:text-base">
+          1x² - 5x + 6 = 0
+        </span>
+      </div>
+
+      <!-- Selectores de configuración (Opciones) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+        <!-- Selector de Dominio Numérico -->
+        <div class="bg-slate-50/70 p-3.5 rounded-xl border border-slate-200">
+          <span class="block text-xs font-semibold text-slate-700 mb-2">Conjunto numérico:</span>
+          <div class="flex gap-2">
+            <label class="flex-1 cursor-pointer">
+              <input type="radio" name="domain" value="real" checked class="peer sr-only" />
+              <div class="py-2 px-3 text-center text-xs font-medium rounded-lg border border-slate-300 text-slate-700 peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 peer-checked:shadow-xs transition">
+                Reales (ℝ)
+              </div>
+            </label>
+            <label class="flex-1 cursor-pointer">
+              <input type="radio" name="domain" value="complex" class="peer sr-only" />
+              <div class="py-2 px-3 text-center text-xs font-medium rounded-lg border border-slate-300 text-slate-700 peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 peer-checked:shadow-xs transition">
+                Complejos (ℂ)
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Selector de Formato de Resultados -->
+        <div class="bg-slate-50/70 p-3.5 rounded-xl border border-slate-200">
+          <span class="block text-xs font-semibold text-slate-700 mb-2">Formato de raíces:</span>
+          <div class="flex gap-2">
+            <label class="flex-1 cursor-pointer">
+              <input type="radio" name="format" value="fractional" checked class="peer sr-only" />
+              <div class="py-2 px-3 text-center text-xs font-medium rounded-lg border border-slate-300 text-slate-700 peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 peer-checked:shadow-xs transition">
+                Fracciones / Raíces
+              </div>
+            </label>
+            <label class="flex-1 cursor-pointer">
+              <input type="radio" name="format" value="decimal" class="peer sr-only" />
+              <div class="py-2 px-3 text-center text-xs font-medium rounded-lg border border-slate-300 text-slate-700 peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 peer-checked:shadow-xs transition">
+                Decimal
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botones de Acción -->
+      <div class="flex flex-col sm:flex-row gap-3 pt-2">
+        <button
+          type="submit"
+          class="flex-1 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold py-3 px-6 rounded-xl shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+          </svg>
+          Calcular Raíces
+        </button>
+
+        <button
+          type="button"
+          id="btn-clear"
+          class="sm:w-28 py-3 px-4 border border-slate-300 hover:bg-slate-100 text-slate-700 font-medium rounded-xl transition text-center cursor-pointer"
+        >
+          Limpiar
+        </button>
+      </div>
+
+      <!-- Ejemplos rápidos para probar al instante -->
+      <div class="pt-1">
+        <span class="block text-xs font-semibold text-slate-500 mb-2">Ejemplos rápidos para probar:</span>
+        <div class="flex flex-wrap gap-2 text-xs">
+          <button
+            type="button"
+            class="example-btn px-2.5 py-1.5 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 rounded-lg border border-slate-200 transition font-mono cursor-pointer"
+            data-a="1" data-b="-5" data-c="6" data-domain="real" data-format="fractional"
+          >
+            x² - 5x + 6 = 0
+          </button>
+          <button
+            type="button"
+            class="example-btn px-2.5 py-1.5 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 rounded-lg border border-slate-200 transition font-mono cursor-pointer"
+            data-a="1" data-b="0" data-c="-2" data-domain="real" data-format="fractional"
+          >
+            x² - 2 = 0 (2sqrt(2)/2)
+          </button>
+          <button
+            type="button"
+            class="example-btn px-2.5 py-1.5 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 rounded-lg border border-slate-200 transition font-mono cursor-pointer"
+            data-a="1" data-b="2" data-c="5" data-domain="complex" data-format="fractional"
+          >
+            x² + 2x + 5 = 0 (Complejas)
+          </button>
+          <button
+            type="button"
+            class="example-btn px-2.5 py-1.5 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 rounded-lg border border-slate-200 transition font-mono cursor-pointer"
+            data-a="1" data-b="-4" data-c="4" data-domain="real" data-format="fractional"
+          >
+            x² - 4x + 4 = 0 (Raíz doble)
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <!-- ÁREA DE RESULTADOS (Mostrada debajo de los inputs) -->
+    <div id="results-container" class="border-t border-slate-200 pt-6 mt-6">
+      <!-- Estado inicial / Placeholder cuando no se ha calculado nada -->
+      <div id="initial-placeholder" class="text-center py-6 px-4 bg-slate-50/70 border border-dashed border-slate-300 rounded-xl">
+        <p class="text-sm text-slate-500">
+          Introduce los valores de <span class="font-semibold text-slate-700">a</span>, <span class="font-semibold text-slate-700">b</span> y <span class="font-semibold text-slate-700">c</span> y presiona <span class="font-semibold text-blue-600">"Calcular Raíces"</span> para ver los resultados.
+        </p>
+      </div>
+
+      <!-- Contenedor dinámico de resultados (se llena con JS) -->
+      <div id="results-content" class="hidden space-y-4">
+        <!-- Caja del Discriminante -->
+        <div id="discriminant-box" class="p-4 rounded-xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-slate-50 border-slate-200">
+          <div>
+            <div class="text-xs uppercase tracking-wider font-semibold text-slate-500">Discriminante</div>
+            <div id="discriminant-formula" class="font-mono text-sm sm:text-base font-semibold text-slate-800 mt-0.5">
+              Δ = b² - 4ac
+            </div>
+          </div>
+          <span id="discriminant-badge" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold">
+            <!-- Badge dinámico -->
+          </span>
+        </div>
+
+        <!-- Alerta de Error o Advertencia -->
+        <div id="alert-box" class="hidden p-4 rounded-xl border text-sm">
+          <!-- Mensaje dinámico de error o advertencia -->
+        </div>
+
+        <!-- Tarjetas de las Raíces -->
+        <div id="roots-wrapper" class="space-y-3">
+          <div class="text-xs font-semibold uppercase tracking-wider text-slate-500">
+            Raíces obtenidas:
+          </div>
+          <div id="roots-grid" class="grid grid-cols-1 gap-3">
+            <!-- Se insertan dinámicamente con JS -->
+          </div>
+        </div>
+
+        <!-- Botón para sugerir cambiar a complejo si Δ < 0 en reales -->
+        <div id="switch-to-complex-banner" class="hidden p-4 bg-indigo-50 border border-indigo-200 rounded-xl text-center">
+          <p class="text-xs sm:text-sm text-indigo-900 mb-2">
+            ¿Deseas calcular las raíces en el conjunto de los <strong>Números Complejos (ℂ)</strong>?
+          </p>
+          <button
+            type="button"
+            id="btn-switch-complex"
+            class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg shadow-xs transition cursor-pointer"
+          >
+            Calcular en Números Complejos (ℂ)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { calculateBhaskara } from '../../calculator/bhaskara.js';
+
+  // Referencias a los elementos del DOM
+  const form = document.getElementById('bhaskara-form');
+  const inputA = document.getElementById('input-a');
+  const inputB = document.getElementById('input-b');
+  const inputC = document.getElementById('input-c');
+  const equationPreview = document.getElementById('equation-preview');
+  const btnClear = document.getElementById('btn-clear');
+  const exampleButtons = document.querySelectorAll('.example-btn');
+
+  const initialPlaceholder = document.getElementById('initial-placeholder');
+  const resultsContent = document.getElementById('results-content');
+  const discriminantBox = document.getElementById('discriminant-box');
+  const discriminantFormula = document.getElementById('discriminant-formula');
+  const discriminantBadge = document.getElementById('discriminant-badge');
+  const alertBox = document.getElementById('alert-box');
+  const rootsWrapper = document.getElementById('roots-wrapper');
+  const rootsGrid = document.getElementById('roots-grid');
+  const switchToComplexBanner = document.getElementById('switch-to-complex-banner');
+  const btnSwitchComplex = document.getElementById('btn-switch-complex');
+
+  // Actualiza la visualización de la ecuación matemática en tiempo real
+  function updateEquationPreview() {
+    const aVal = inputA.value.trim();
+    const bVal = inputB.value.trim();
+    const cVal = inputC.value.trim();
+
+    if (!aVal && !bVal && !cVal) {
+      equationPreview.textContent = 'ax² + bx + c = 0';
+      return;
+    }
+
+    const a = aVal !== '' ? aVal : 'a';
+    const b = bVal !== '' ? (Number(bVal) >= 0 ? `+ ${bVal}` : `- ${Math.abs(Number(bVal))}`) : '+ b';
+    const c = cVal !== '' ? (Number(cVal) >= 0 ? `+ ${cVal}` : `- ${Math.abs(Number(cVal))}`) : '+ c';
+
+    equationPreview.textContent = `${a}x² ${b}x ${c} = 0`;
+  }
+
+  [inputA, inputB, inputC].forEach((input) => {
+    input.addEventListener('input', updateEquationPreview);
+  });
+
+  // Ejecución del cálculo
+  function runCalculation() {
+    const rawA = inputA.value.trim();
+    const rawB = inputB.value.trim();
+    const rawC = inputC.value.trim();
+
+    const domain = form.querySelector('input[name="domain"]:checked')?.value || 'real';
+    const format = form.querySelector('input[name="format"]:checked')?.value || 'fractional';
+
+    // Ocultar placeholder inicial y mostrar resultados
+    initialPlaceholder.classList.add('hidden');
+    resultsContent.classList.remove('hidden');
+    alertBox.classList.add('hidden');
+    switchToComplexBanner.classList.add('hidden');
+    discriminantBox.classList.remove('hidden');
+    rootsWrapper.classList.remove('hidden');
+
+    const result = calculateBhaskara(rawA, rawB, rawC, { domain, format });
+
+    if (!result.success) {
+      // Error de validación (por ej: a = 0 o campos vacíos)
+      discriminantBox.classList.add('hidden');
+      rootsWrapper.classList.add('hidden');
+      alertBox.className = 'p-4 rounded-xl border text-sm bg-rose-50 border-rose-200 text-rose-800';
+      alertBox.innerHTML = `
+        <div class="flex items-center gap-2 font-semibold">
+          <svg class="w-5 h-5 text-rose-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          Error al calcular
+        </div>
+        <p class="mt-1">${result.error}</p>
+      `;
+      alertBox.classList.remove('hidden');
+      return;
+    }
+
+    const { discriminant, roots, hasRealRoots, isDoubleRoot, message } = result;
+
+    // Actualizar Discriminante
+    discriminantFormula.textContent = `Δ = (${result.inputs.b})² - 4(${result.inputs.a})(${result.inputs.c}) = ${discriminant}`;
+
+    if (discriminant > 0) {
+      discriminantBadge.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200';
+      discriminantBadge.textContent = 'Δ > 0 (Dos raíces reales distintas)';
+    } else if (discriminant === 0) {
+      discriminantBadge.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 border border-blue-200';
+      discriminantBadge.textContent = 'Δ = 0 (Una raíz real doble)';
+    } else {
+      discriminantBadge.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200';
+      discriminantBadge.textContent = domain === 'complex'
+        ? 'Δ < 0 (Dos raíces complejas conjugadas)'
+        : 'Δ < 0 (Sin soluciones reales)';
+    }
+
+    // Manejar caso de raíces reales inexistentes
+    if (domain === 'real' && !hasRealRoots) {
+      rootsWrapper.classList.add('hidden');
+      alertBox.className = 'p-4 rounded-xl border text-sm bg-amber-50 border-amber-200 text-amber-900';
+      alertBox.innerHTML = `
+        <div class="flex items-center gap-2 font-semibold text-amber-800">
+          <svg class="w-5 h-5 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          Sin raíces reales
+        </div>
+        <p class="mt-1">${message}</p>
+      `;
+      alertBox.classList.remove('hidden');
+      switchToComplexBanner.classList.remove('hidden');
+      return;
+    }
+
+    // Renderizar tarjetas de las raíces
+    rootsGrid.innerHTML = '';
+    const isSingle = isDoubleRoot || roots.length === 1;
+
+    rootsGrid.className = isSingle ? 'grid grid-cols-1 gap-3' : 'grid grid-cols-1 sm:grid-cols-2 gap-3';
+
+    roots.forEach((root) => {
+      const rootCard = document.createElement('div');
+      rootCard.className = 'p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col justify-between hover:border-blue-300 transition';
+
+      let valueDisplay = `<div class="font-mono text-xl sm:text-2xl font-bold text-slate-800 tracking-tight">${root.value}</div>`;
+
+      // Si existe expresión sin simplificar (ej: 2sqrt(2)/2 = sqrt(2)), mostrarla claramente
+      if (root.raw && root.raw !== root.value) {
+        valueDisplay = `
+          <div class="flex items-baseline flex-wrap gap-2">
+            <span class="font-mono text-lg sm:text-xl font-bold text-slate-700">${root.raw}</span>
+            <span class="text-xs text-slate-400 font-sans">o simplificado:</span>
+            <span class="font-mono text-xl sm:text-2xl font-bold text-blue-600">${root.value}</span>
+          </div>
+        `;
+      }
+
+      rootCard.innerHTML = `
+        <div class="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1">${root.name}</div>
+        ${valueDisplay}
+      `;
+      rootsGrid.appendChild(rootCard);
+    });
+  }
+
+  // Escuchar envío del formulario
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    runCalculation();
+  });
+
+  // Re-calcular automáticamente al cambiar dominio o formato si ya se han ingresado datos
+  form.querySelectorAll('input[name="domain"], input[name="format"]').forEach((radio) => {
+    radio.addEventListener('change', () => {
+      if (inputA.value.trim() !== '') {
+        runCalculation();
+      }
+    });
+  });
+
+  // Botón Limpiar
+  btnClear.addEventListener('click', () => {
+    form.reset();
+    updateEquationPreview();
+    initialPlaceholder.classList.remove('hidden');
+    resultsContent.classList.add('hidden');
+  });
+
+  // Botones de Ejemplos rápidos
+  exampleButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const a = btn.getAttribute('data-a');
+      const b = btn.getAttribute('data-b');
+      const c = btn.getAttribute('data-c');
+      const domain = btn.getAttribute('data-domain');
+      const format = btn.getAttribute('data-format');
+
+      inputA.value = a;
+      inputB.value = b;
+      inputC.value = c;
+
+      if (domain) {
+        const domainRadio = form.querySelector(`input[name="domain"][value="${domain}"]`);
+        if (domainRadio) domainRadio.checked = true;
+      }
+
+      if (format) {
+        const formatRadio = form.querySelector(`input[name="format"][value="${format}"]`);
+        if (formatRadio) formatRadio.checked = true;
+      }
+
+      updateEquationPreview();
+      runCalculation();
+    });
+  });
+
+  // Botón para cambiar a números complejos directamente
+  btnSwitchComplex.addEventListener('click', () => {
+    const complexRadio = form.querySelector('input[name="domain"][value="complex"]');
+    if (complexRadio) {
+      complexRadio.checked = true;
+      runCalculation();
+    }
+  });
+
+  // Inicializar preview con valores iniciales
+  updateEquationPreview();
+</script>
