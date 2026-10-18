@@ -2,9 +2,28 @@
 // BhaskaraCalculator.astro - Componente de renderizado para la calculadora de Bhaskara
 
 const coefficients = [
-  { id: 'input-a', name: 'a', hint: 'término cuadrático', placeholder: '1' },
-  { id: 'input-b', name: 'b', hint: 'término lineal', placeholder: '-5' },
-  { id: 'input-c', name: 'c', hint: 'término independiente', placeholder: '6' },
+  { id: 'input-a', name: 'a', hint: 'término cuadrático', placeholder: '1', enterKey: 'next' },
+  { id: 'input-b', name: 'b', hint: 'término lineal', placeholder: '-5', enterKey: 'next' },
+  { id: 'input-c', name: 'c', hint: 'término independiente', placeholder: '6', enterKey: 'go' },
+];
+
+const options = [
+  {
+    name: 'domain',
+    label: 'Conjunto',
+    choices: [
+      { value: 'real', text: 'Reales', symbol: 'ℝ', checked: true },
+      { value: 'complex', text: 'Complejos', symbol: 'ℂ' },
+    ],
+  },
+  {
+    name: 'format',
+    label: 'Formato',
+    choices: [
+      { value: 'fractional', text: 'Exacto', checked: true },
+      { value: 'decimal', text: 'Decimal' },
+    ],
+  },
 ];
 
 const examples = [
@@ -18,78 +37,74 @@ const segmentBase =
   'block rounded-lg px-3 py-2 text-center text-sm font-semibold text-ink/60 transition duration-300 ease-fluid hover:text-ink peer-checked:bg-ink peer-checked:text-paper peer-focus-visible:ring-2 peer-focus-visible:ring-accent peer-focus-visible:ring-offset-2';
 ---
 
-<div class="flex flex-col gap-4">
+<div class="grid grid-cols-1 gap-4 lg:grid-cols-5 lg:items-start">
   <!-- Entrada de datos -->
   <form
     id="bhaskara-form"
-    class="flex flex-col gap-8 rounded-2xl border border-ink/10 bg-white p-6 shadow-sm sm:p-8"
+    class="flex flex-col gap-6 rounded-2xl border border-ink/10 bg-white p-4 shadow-sm sm:gap-8 sm:p-8 lg:col-span-3"
     novalidate
   >
     <fieldset class="flex flex-col gap-4">
-      <legend class="mb-4 font-serif text-2xl font-medium">Coeficientes</legend>
+      <legend class="sr-only sm:not-sr-only sm:mb-4 sm:font-serif sm:text-2xl sm:font-medium">Coeficientes</legend>
 
-      <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div class="grid grid-cols-3 gap-2 sm:gap-4">
         {coefficients.map((coef) => (
-          <label for={coef.id} class="group flex flex-col gap-2">
-            <span class="flex items-baseline gap-2">
+          <label for={coef.id} class="flex flex-col gap-2">
+            <span class="flex flex-wrap items-baseline gap-x-2">
               <span class="font-serif text-3xl leading-none text-accent">{coef.name}</span>
-              <span class="text-xs font-medium text-ink/50">{coef.hint}</span>
+              <span class="hidden text-xs font-medium text-ink/50 sm:inline">{coef.hint}</span>
             </span>
             <input
               type="number"
               step="any"
-              inputmode="decimal"
               id={coef.id}
               name={coef.name}
               required
+              autocomplete="off"
+              enterkeyhint={coef.enterKey}
               placeholder={coef.placeholder}
-              class="h-16 w-full rounded-xl border-2 border-ink/20 bg-paper/50 px-4 text-2xl font-semibold tabular-nums text-ink outline-none transition duration-300 ease-fluid placeholder:font-normal placeholder:text-ink/25 hover:border-ink/40 focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/15"
+              class="coef-input h-14 w-full min-w-0 rounded-xl border-2 border-ink/20 bg-paper/50 px-3 text-xl font-semibold tabular-nums text-ink outline-none transition duration-300 ease-fluid placeholder:font-normal placeholder:text-ink/25 hover:border-ink/40 focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/15 sm:h-16 sm:px-4 sm:text-2xl"
             />
           </label>
         ))}
       </div>
 
       <!-- Vista previa de la ecuación ingresada -->
-      <p class="flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-xl bg-paper/70 px-4 py-3">
+      <p class="flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-xl bg-paper/70 px-4 py-2 sm:py-3">
         <span class="text-xs font-semibold text-ink/50">Tu ecuación</span>
-        <span id="equation-preview" class="font-serif text-xl tabular-nums">ax² + bx + c = 0</span>
+        <span id="equation-preview" class="font-serif text-lg tabular-nums sm:text-xl">ax² + bx + c = 0</span>
       </p>
     </fieldset>
 
-    <!-- Opciones -->
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <fieldset class="flex flex-col gap-2">
-        <legend class="mb-2 text-sm font-semibold text-ink/70">Conjunto numérico</legend>
-        <div class="grid grid-cols-2 gap-1 rounded-xl border border-ink/10 bg-paper/60 p-1">
-          <label class="cursor-pointer">
-            <input type="radio" name="domain" value="real" checked class="peer sr-only" />
-            <span class={segmentBase}>Reales ℝ</span>
-          </label>
-          <label class="cursor-pointer">
-            <input type="radio" name="domain" value="complex" class="peer sr-only" />
-            <span class={segmentBase}>Complejos ℂ</span>
-          </label>
+    <!-- Opciones: en mobile una fila por opción, desde sm en dos columnas -->
+    <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4">
+      {options.map((opt) => (
+        <div
+          role="radiogroup"
+          aria-labelledby={`label-${opt.name}`}
+          class="flex items-center justify-between gap-4 sm:flex-col sm:items-stretch sm:gap-2"
+        >
+          <span id={`label-${opt.name}`} class="text-xs font-semibold text-ink/60 sm:text-sm sm:text-ink/70">
+            {opt.label}
+          </span>
+          <div class="grid w-52 grid-cols-2 gap-1 rounded-xl border border-ink/10 bg-paper/60 p-1 sm:w-auto">
+            {opt.choices.map((choice) => (
+              <label class="cursor-pointer">
+                <input type="radio" name={opt.name} value={choice.value} checked={choice.checked} class="peer sr-only" />
+                <span class={segmentBase}>
+                  {choice.text}
+                  {choice.symbol && <span class="hidden sm:inline"> {choice.symbol}</span>}
+                </span>
+              </label>
+            ))}
+          </div>
         </div>
-      </fieldset>
-
-      <fieldset class="flex flex-col gap-2">
-        <legend class="mb-2 text-sm font-semibold text-ink/70">Formato de las raíces</legend>
-        <div class="grid grid-cols-2 gap-1 rounded-xl border border-ink/10 bg-paper/60 p-1">
-          <label class="cursor-pointer">
-            <input type="radio" name="format" value="fractional" checked class="peer sr-only" />
-            <span class={segmentBase}>Exacto</span>
-          </label>
-          <label class="cursor-pointer">
-            <input type="radio" name="format" value="decimal" class="peer sr-only" />
-            <span class={segmentBase}>Decimal</span>
-          </label>
-        </div>
-      </fieldset>
+      ))}
     </div>
 
     <!-- Acciones -->
     <div class="flex flex-col gap-4">
-      <div class="flex flex-col gap-2 sm:flex-row">
+      <div class="flex gap-2">
         <button
           type="submit"
           class="flex-1 cursor-pointer rounded-xl bg-accent px-3 py-3 text-base font-semibold text-white transition duration-300 ease-fluid hover:bg-accent-strong active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
@@ -99,13 +114,14 @@ const segmentBase =
         <button
           type="button"
           id="btn-clear"
-          class="cursor-pointer rounded-xl border border-ink/15 px-6 py-3 text-base font-semibold text-ink/70 transition duration-300 ease-fluid hover:border-ink/30 hover:text-ink active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2"
+          class="cursor-pointer rounded-xl border border-ink/15 px-4 py-3 text-base font-semibold text-ink/70 transition duration-300 ease-fluid hover:border-ink/30 hover:text-ink active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 sm:px-6"
         >
           Limpiar
         </button>
       </div>
 
-      <div class="flex flex-wrap items-center gap-2">
+      <!-- Ejemplos: solo desde tablet, en mobile se prioriza ir directo al cálculo -->
+      <div class="hidden flex-wrap items-center gap-2 sm:flex">
         <span class="mr-1 text-xs font-semibold text-ink/50">Prueba con</span>
         {examples.map((ex) => (
           <button
@@ -129,16 +145,16 @@ const segmentBase =
   <section
     id="results-container"
     aria-live="polite"
-    class="scroll-mt-4 rounded-2xl bg-ink p-6 text-paper shadow-lg sm:p-8"
+    class="scroll-mt-4 rounded-2xl bg-ink p-4 text-paper shadow-lg sm:p-8 lg:sticky lg:top-6 lg:col-span-2"
   >
-    <h2 class="mb-4 font-serif text-2xl font-medium">Resultado</h2>
+    <h2 class="mb-4 font-serif text-xl font-medium sm:text-2xl">Resultado</h2>
 
     <!-- Estado inicial -->
     <div
       id="initial-placeholder"
-      class="rounded-xl border border-dashed border-paper/20 px-4 py-8 text-center"
+      class="rounded-xl border border-dashed border-paper/20 px-4 py-6 text-center sm:py-8"
     >
-      <p class="font-serif text-3xl text-paper/30">x₁ = ? &nbsp; x₂ = ?</p>
+      <p class="font-serif text-2xl text-paper/30 sm:text-3xl">x₁ = ? &nbsp; x₂ = ?</p>
       <p class="mt-2 text-sm text-paper/50">
         Completa <span class="text-accent-soft">a</span>, <span class="text-accent-soft">b</span>{' y '}<span class="text-accent-soft">c</span> y presiona calcular.
       </p>
@@ -146,28 +162,16 @@ const segmentBase =
 
     <!-- Contenedor dinámico de resultados (se llena con JS) -->
     <div id="results-content" class="hidden flex-col gap-4">
-      <!-- Discriminante -->
-      <div
-        id="discriminant-box"
-        class="flex flex-col items-start justify-between gap-2 rounded-xl border border-paper/10 bg-paper/5 p-4 sm:flex-row sm:items-center"
-      >
-        <div>
-          <div class="text-xs font-semibold text-paper/50">Discriminante</div>
-          <div id="discriminant-formula" class="mt-1 font-serif text-lg tabular-nums">Δ = b² − 4ac</div>
-        </div>
-        <span id="discriminant-badge" class="rounded-full px-3 py-1 text-xs font-semibold"></span>
-      </div>
+      <!-- Raíces: lo primero que se ve -->
+      <div id="roots-grid" class="grid grid-cols-1 gap-2"></div>
 
       <!-- Alerta de error o advertencia -->
       <div id="alert-box" class="hidden rounded-xl border p-4 text-sm"></div>
 
-      <!-- Raíces -->
-      <div id="roots-grid" class="grid grid-cols-1 gap-2"></div>
-
       <!-- Sugerencia de pasar a complejos si Δ < 0 en reales -->
       <div
         id="switch-to-complex-banner"
-        class="hidden flex-col items-start gap-4 rounded-xl border border-paper/10 p-4 sm:flex-row sm:items-center sm:justify-between"
+        class="hidden flex-col items-start gap-4 rounded-xl border border-paper/10 p-4 sm:flex-row sm:items-center sm:justify-between lg:flex-col lg:items-start"
       >
         <p class="text-sm text-paper/70">Esta ecuación sí tiene solución en los números complejos.</p>
         <button
@@ -177,6 +181,16 @@ const segmentBase =
         >
           Calcular en ℂ
         </button>
+      </div>
+
+      <!-- Discriminante: detalle secundario -->
+      <div
+        id="discriminant-box"
+        class="flex flex-col items-start gap-2 rounded-xl border border-paper/10 bg-paper/5 p-4"
+      >
+        <div class="text-xs font-semibold text-paper/50">Discriminante</div>
+        <div id="discriminant-formula" class="font-serif text-lg tabular-nums">Δ = b² − 4ac</div>
+        <span id="discriminant-badge" class="rounded-full px-3 py-1 text-xs font-semibold"></span>
       </div>
     </div>
   </section>
@@ -190,6 +204,7 @@ const segmentBase =
   const inputA = document.getElementById('input-a');
   const inputB = document.getElementById('input-b');
   const inputC = document.getElementById('input-c');
+  const coefInputs = [inputA, inputB, inputC];
   const equationPreview = document.getElementById('equation-preview');
   const btnClear = document.getElementById('btn-clear');
   const exampleButtons = document.querySelectorAll('.example-btn');
@@ -232,8 +247,19 @@ const segmentBase =
     equationPreview.textContent = `${a}x² ${b}x ${c} = 0`;
   }
 
-  [inputA, inputB, inputC].forEach((input) => {
+  coefInputs.forEach((input, index) => {
     input.addEventListener('input', updateEquationPreview);
+
+    // Al enfocar se selecciona el valor para poder reemplazarlo de una
+    input.addEventListener('focus', () => input.select());
+
+    // Enter en a o b pasa al siguiente coeficiente; en c envía el formulario
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && index < coefInputs.length - 1) {
+        e.preventDefault();
+        coefInputs[index + 1].focus();
+      }
+    });
   });
 
   function showAlert(tone, title, text) {
@@ -255,12 +281,14 @@ const segmentBase =
     resultsContent.classList.add('reveal');
   }
 
-  // Lleva el panel de resultados a la vista si quedó fuera de pantalla (mobile)
+  // Lleva el panel de resultados a la vista si no se ve completo (mobile y tablet)
   function bringResultsIntoView() {
-    const rect = resultsContainer.getBoundingClientRect();
-    if (rect.top > window.innerHeight * 0.75) {
-      resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    requestAnimationFrame(() => {
+      const rect = resultsContainer.getBoundingClientRect();
+      if (rect.top < 0 || rect.bottom > window.innerHeight) {
+        resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    });
   }
 
   // Ejecución del cálculo
@@ -279,7 +307,6 @@ const segmentBase =
     alertBox.classList.add('hidden');
     rootsGrid.classList.remove('hidden');
     replayReveal();
-    bringResultsIntoView();
 
     const result = calculateBhaskara(rawA, rawB, rawC, { domain, format });
 
@@ -320,19 +347,19 @@ const segmentBase =
     // Renderizar tarjetas de las raíces
     rootsGrid.innerHTML = '';
     const isSingle = isDoubleRoot || roots.length === 1;
-    rootsGrid.className = isSingle ? 'grid grid-cols-1 gap-2' : 'grid grid-cols-1 gap-2 sm:grid-cols-2';
+    rootsGrid.className = isSingle ? 'grid grid-cols-1 gap-2' : 'grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-1';
 
     roots.forEach((root) => {
       const rootCard = document.createElement('div');
-      rootCard.className = 'rounded-xl border border-paper/15 bg-paper/5 p-4';
+      rootCard.className = 'flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl border border-paper/15 bg-paper/5 p-4';
 
       let valueDisplay;
       if (root.rawMath && root.rawMath !== root.math) {
         valueDisplay = `
-          <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-            <div class="text-3xl text-paper/60">${root.rawMath}</div>
-            <span class="text-xs text-paper/40">simplificado</span>
-            <div class="text-3xl text-paper">${root.math}</div>
+          <div class="text-3xl text-paper">${root.math}</div>
+          <div class="flex items-center gap-2 text-paper/50">
+            <span class="text-xs">sin simplificar</span>
+            <span class="text-xl">${root.rawMath}</span>
           </div>
         `;
       } else {
@@ -340,7 +367,7 @@ const segmentBase =
       }
 
       rootCard.innerHTML = `
-        <div class="mb-2 text-xs font-semibold text-accent-soft">${root.name}</div>
+        <div class="w-full text-xs font-semibold text-accent-soft">${root.name}</div>
         ${valueDisplay}
       `;
       rootsGrid.appendChild(rootCard);
@@ -350,7 +377,10 @@ const segmentBase =
   // Escuchar envío del formulario
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+    // Cierra el teclado en mobile para que el resultado quede a la vista
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
     runCalculation();
+    bringResultsIntoView();
   });
 
   // Recalcular automáticamente al cambiar dominio o formato si ya se ingresaron datos
@@ -386,6 +416,7 @@ const segmentBase =
 
       updateEquationPreview();
       runCalculation();
+      bringResultsIntoView();
     });
   });
 

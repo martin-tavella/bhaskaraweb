@@ -24,18 +24,35 @@ import BhaskaraCalculator from '../components/BhaskaraCalculator.astro';
   </head>
 
   <body class="min-h-full font-sans text-ink antialiased selection:bg-accent selection:text-white">
-    <main class="mx-auto w-full max-w-2xl px-4 py-12 sm:py-16">
-      <header class="mb-8 flex flex-col gap-4 sm:mb-12">
-        <h1 class="font-serif text-5xl font-medium tracking-tight sm:text-6xl">
-          Fórmula de Bhaskara
+    <main class="mx-auto w-full max-w-2xl px-4 py-6 sm:py-16 lg:max-w-5xl">
+      <header class="mb-6 flex flex-col gap-3 sm:mb-12 sm:gap-4">
+        <h1 class="font-serif text-4xl font-medium tracking-tight sm:text-6xl">
+          Fórmula de{' '}<span class="relative inline-block text-accent">
+            Bhaskara
+            <svg
+              class="title-underline absolute -bottom-2 left-0 h-3 w-full text-accent/70"
+              viewBox="0 0 200 12"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M2 8 C 40 3, 90 2, 130 5 S 185 9, 198 4"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                pathLength="1"
+              />
+            </svg>
+          </span>
         </h1>
 
-        <p class="max-w-lg text-base text-ink/70">
+        <p class="hidden max-w-lg text-base text-ink/70 sm:block">
           Ingresa los coeficientes de tu ecuación de segundo grado y obtén sus raíces,
           en números reales o complejos.
         </p>
 
-        <math display="inline" class="self-start text-2xl text-ink/80">
+        <math display="inline" class="self-start text-lg text-ink/70 sm:text-2xl">
           <mi>x</mi>
           <mo>=</mo>
           <mfrac>

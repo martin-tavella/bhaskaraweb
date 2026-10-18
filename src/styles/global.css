@@ -58,8 +58,24 @@ input[type="number"] {
   animation: reveal 600ms var(--ease-fluid) both;
 }
 
+/* Subrayado del título que se dibuja como un trazo de lápiz */
+@keyframes draw-stroke {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.title-underline path {
+  stroke-dasharray: 1;
+  animation: draw-stroke 900ms 200ms var(--ease-fluid) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .reveal {
+  .reveal,
+  .title-underline path {
     animation: none;
   }
 }
