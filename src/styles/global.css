@@ -1,5 +1,69 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Newsreader", "STIX Two Text", Georgia, serif;
+
+  --color-paper: #f4f1ea;
+  --color-ink: #1d1c1a;
+  --color-accent: #b8401f;
+  --color-accent-strong: #9a3417;
+  --color-accent-soft: #f6a487;
+
+  --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* Fondo de hoja cuadriculada: líneas finas sobre color papel plano */
+body {
+  background-color: var(--color-paper);
+  background-image:
+    linear-gradient(to right, rgb(29 28 26 / 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(29 28 26 / 0.055) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+h1, h2, p {
+  text-wrap: pretty;
+}
+
+h1, h2 {
+  text-wrap: balance;
+}
+
+/* Inputs numéricos sin flechas del navegador */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* Aparición suave del contenido de resultados */
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal {
+  animation: reveal 600ms var(--ease-fluid) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    animation: none;
+  }
+}
+
 /* Tipografía y estilos para renderizado de fórmulas matemáticas y MathML */
 math {
   font-family: "STIX Two Math", "Cambria Math", "Latin Modern Math", "TeX Gyre Termes Math", "Times New Roman", serif;

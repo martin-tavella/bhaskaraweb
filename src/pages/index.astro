@@ -4,7 +4,7 @@ import BhaskaraCalculator from '../components/BhaskaraCalculator.astro';
 ---
 
 <!doctype html>
-<html lang="es" class="h-full bg-slate-50">
+<html lang="es" class="h-full">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -15,61 +15,49 @@ import BhaskaraCalculator from '../components/BhaskaraCalculator.astro';
       name="description"
       content="Calculadora interactiva de la fórmula de Bhaskara. Resuelve ecuaciones cuadráticas paso a paso en números reales y complejos con raíces exactas o decimales."
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap"
+    />
   </head>
 
-  <body class="min-h-full flex flex-col justify-between text-slate-800 antialiased selection:bg-blue-600 selection:text-white">
-    <!-- Contenedor principal centrado -->
-    <main class="flex-1 flex flex-col items-center justify-center px-4 py-10 sm:py-14 max-w-4xl mx-auto w-full">
-      <!-- Encabezado de la Landing -->
-      <header class="text-center mb-8 space-y-3">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold tracking-wide">
-          <span>Ecuación Cuadrática</span>
-        </div>
-
-        <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900">
+  <body class="min-h-full font-sans text-ink antialiased selection:bg-accent selection:text-white">
+    <main class="mx-auto w-full max-w-2xl px-4 py-12 sm:py-16">
+      <header class="mb-8 flex flex-col gap-4 sm:mb-12">
+        <h1 class="font-serif text-5xl font-medium tracking-tight sm:text-6xl">
           Fórmula de Bhaskara
         </h1>
 
-        <p class="text-slate-600 text-sm sm:text-base max-w-lg mx-auto font-normal">
-          Calcula las raíces de cualquier ecuación de segundo grado. Soporta soluciones en el dominio 
-          <span class="font-medium text-slate-800">Real (ℝ)</span> y <span class="font-medium text-slate-800">Complejo (ℂ)</span>, 
-          con salida en <span class="font-medium text-slate-800">fracciones/radicales</span> o <span class="font-medium text-slate-800">decimales</span>.
+        <p class="max-w-lg text-base text-ink/70">
+          Ingresa los coeficientes de tu ecuación de segundo grado y obtén sus raíces,
+          en números reales o complejos.
         </p>
 
-        <!-- Fórmula general de Bhaskara en formato matemático exacto -->
-        <div class="pt-2">
-          <div class="inline-block bg-white border border-slate-200 shadow-xs px-6 py-3 rounded-2xl text-slate-800">
-            <math display="inline" class="text-xl sm:text-2xl font-serif">
-              <mi>x</mi>
-              <mo>=</mo>
-              <mfrac>
+        <math display="inline" class="self-start text-2xl text-ink/80">
+          <mi>x</mi>
+          <mo>=</mo>
+          <mfrac>
+            <mrow>
+              <mo>-</mo><mi>b</mi>
+              <mo>±</mo>
+              <msqrt>
                 <mrow>
-                  <mo>-</mo><mi>b</mi>
-                  <mo>±</mo>
-                  <msqrt>
-                    <mrow>
-                      <msup><mi>b</mi><mn>2</mn></msup>
-                      <mo>-</mo>
-                      <mn>4</mn><mi>a</mi><mi>c</mi>
-                    </mrow>
-                  </msqrt>
+                  <msup><mi>b</mi><mn>2</mn></msup>
+                  <mo>-</mo>
+                  <mn>4</mn><mi>a</mi><mi>c</mi>
                 </mrow>
-                <mrow>
-                  <mn>2</mn><mi>a</mi>
-                </mrow>
-              </mfrac>
-            </math>
-          </div>
-        </div>
+              </msqrt>
+            </mrow>
+            <mrow>
+              <mn>2</mn><mi>a</mi>
+            </mrow>
+          </mfrac>
+        </math>
       </header>
 
-      <!-- Calculadora centrada -->
       <BhaskaraCalculator />
     </main>
-
-    <!-- Footer minimalista -->
-    <footer class="py-6 border-t border-slate-200 text-center text-xs text-slate-400">
-      <p>Landing page construida con Astro, TailwindCSS y JavaScript plano modularizado.</p>
-    </footer>
   </body>
 </html>

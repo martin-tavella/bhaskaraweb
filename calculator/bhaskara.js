@@ -1,4 +1,4 @@
-/**
+ /**
  * bhaskara.js - Módulo de convergencia principal para la resolución de la Fórmula de Bhaskara
  * 
  * Reúne y re-exporta los módulos especializados:
