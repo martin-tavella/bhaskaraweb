@@ -1,1 +1,33 @@
 @import "tailwindcss";
+
+/* Tipografía y estilos para renderizado de fórmulas matemáticas y MathML */
+math {
+  font-family: "STIX Two Math", "Cambria Math", "Latin Modern Math", "TeX Gyre Termes Math", "Times New Roman", serif;
+  font-style: normal;
+  vertical-align: middle;
+}
+
+math mfrac {
+  padding-left: 0.15em;
+  padding-right: 0.15em;
+}
+
+math msqrt {
+  padding-left: 0.05em;
+  padding-right: 0.05em;
+}
+
+math mi {
+  font-style: italic;
+  padding-left: 0.05em;
+  padding-right: 0.05em;
+}
+
+math mo {
+  padding-left: 0.1em;
+  padding-right: 0.1em;
+}
+
+math mn {
+  font-style: normal;
+}

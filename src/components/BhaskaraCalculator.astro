@@ -157,7 +157,7 @@
             class="example-btn px-2.5 py-1.5 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 rounded-lg border border-slate-200 transition font-mono cursor-pointer"
             data-a="1" data-b="0" data-c="-2" data-domain="real" data-format="fractional"
           >
-            x² - 2 = 0 (2sqrt(2)/2)
+            x² - 2 = 0 (2√2 / 2)
           </button>
           <button
             type="button"
@@ -362,15 +362,19 @@
       const rootCard = document.createElement('div');
       rootCard.className = 'p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col justify-between hover:border-blue-300 transition';
 
-      let valueDisplay = `<div class="font-mono text-xl sm:text-2xl font-bold text-slate-800 tracking-tight">${root.value}</div>`;
-
-      // Si existe expresión sin simplificar (ej: 2sqrt(2)/2 = sqrt(2)), mostrarla claramente
-      if (root.raw && root.raw !== root.value) {
+      let valueDisplay;
+      if (root.rawMath && root.rawMath !== root.math) {
         valueDisplay = `
-          <div class="flex items-baseline flex-wrap gap-2">
-            <span class="font-mono text-lg sm:text-xl font-bold text-slate-700">${root.raw}</span>
-            <span class="text-xs text-slate-400 font-sans">o simplificado:</span>
-            <span class="font-mono text-xl sm:text-2xl font-bold text-blue-600">${root.value}</span>
+          <div class="flex items-center flex-wrap gap-2.5 my-1">
+            <div class="text-2xl sm:text-3xl text-slate-800 font-serif">${root.rawMath}</div>
+            <span class="text-xs text-slate-400 font-sans bg-slate-200/60 px-2 py-0.5 rounded-md">o simplificado:</span>
+            <div class="text-2xl sm:text-3xl text-blue-600 font-serif">${root.math}</div>
+          </div>
+        `;
+      } else {
+        valueDisplay = `
+          <div class="text-2xl sm:text-3xl text-slate-800 font-serif my-1">
+            ${root.math || root.value}
           </div>
         `;
       }

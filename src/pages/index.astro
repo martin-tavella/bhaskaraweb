@@ -36,10 +36,29 @@ import BhaskaraCalculator from '../components/BhaskaraCalculator.astro';
           con salida en <span class="font-medium text-slate-800">fracciones/radicales</span> o <span class="font-medium text-slate-800">decimales</span>.
         </p>
 
-        <!-- Fórmula general de Bhaskara en formato legible -->
+        <!-- Fórmula general de Bhaskara en formato matemático exacto -->
         <div class="pt-2">
-          <div class="inline-block bg-white border border-slate-200 shadow-xs px-4 py-2 rounded-xl font-mono text-sm sm:text-base text-slate-700">
-            x = <span class="border-b border-slate-400 pb-0.5">-b ± √(b² - 4ac)</span> / 2a
+          <div class="inline-block bg-white border border-slate-200 shadow-xs px-6 py-3 rounded-2xl text-slate-800">
+            <math display="inline" class="text-xl sm:text-2xl font-serif">
+              <mi>x</mi>
+              <mo>=</mo>
+              <mfrac>
+                <mrow>
+                  <mo>-</mo><mi>b</mi>
+                  <mo>±</mo>
+                  <msqrt>
+                    <mrow>
+                      <msup><mi>b</mi><mn>2</mn></msup>
+                      <mo>-</mo>
+                      <mn>4</mn><mi>a</mi><mi>c</mi>
+                    </mrow>
+                  </msqrt>
+                </mrow>
+                <mrow>
+                  <mn>2</mn><mi>a</mi>
+                </mrow>
+              </mfrac>
+            </math>
           </div>
         </div>
       </header>

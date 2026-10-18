@@ -3,7 +3,34 @@
  */
 
 import { gcd3, normalizeCoefficients } from './normalize.js';
-import { roundTo, formatRadical, simplifyFraction, formatComplexDecimal } from './format.js';
+import {
+  roundTo,
+  formatRadical,
+  simplifyFraction,
+  formatComplexDecimal,
+  formatMathToMathML
+} from './format.js';
+
+/**
+ * Crea un objeto de raíz que incluye tanto el valor de texto como su representación formateada en MathML
+ * con casita de raíz cuadrada y fracciones apiladas verticalmente.
+ * 
+ * @param {string} name Nombre identificador (ej: "x₁", "x₂", "x₁ = x₂")
+ * @param {string} value Valor simplificado
+ * @param {string|null} raw Valor inicial sin simplificar
+ * @returns {object}
+ */
+function createRoot(name, value, raw = null) {
+  const isRawDifferent = raw && raw !== value;
+  const rawVal = isRawDifferent ? raw : null;
+  return {
+    name,
+    value,
+    raw: rawVal,
+    math: formatMathToMathML(value),
+    rawMath: rawVal ? formatMathToMathML(rawVal) : null
+  };
+}
 
 /**
  * Descompone y simplifica una raíz cuadrada entera: sqrt(n) = outside * sqrt(inside)
@@ -84,7 +111,7 @@ export function calculateRealRoots(a, b, c, format = "fractional") {
         isDoubleRoot: true,
         discriminant: delta,
         roots: [
-          { name: "x₁ = x₂", value: `${root}`, raw: null }
+          createRoot("x₁ = x₂", `${root}`)
         ]
       };
     }
@@ -100,8 +127,8 @@ export function calculateRealRoots(a, b, c, format = "fractional") {
       isDoubleRoot: false,
       discriminant: delta,
       roots: [
-        { name: "x₁", value: `${r1}`, raw: null },
-        { name: "x₂", value: `${r2}`, raw: null }
+        createRoot("x₁", `${r1}`),
+        createRoot("x₂", `${r2}`)
       ]
     };
   }
@@ -121,7 +148,7 @@ export function calculateRealRoots(a, b, c, format = "fractional") {
       isDoubleRoot: true,
       discriminant: delta,
       roots: [
-        { name: "x₁ = x₂", value: val, raw: null }
+        createRoot("x₁ = x₂", val)
       ]
     };
   }
@@ -140,8 +167,8 @@ export function calculateRealRoots(a, b, c, format = "fractional") {
       isDoubleRoot: false,
       discriminant: delta,
       roots: [
-        { name: "x₁", value: r1, raw: null },
-        { name: "x₂", value: r2, raw: null }
+        createRoot("x₁", r1),
+        createRoot("x₂", r2)
       ]
     };
   }
@@ -178,8 +205,8 @@ export function calculateRealRoots(a, b, c, format = "fractional") {
     isDoubleRoot: false,
     discriminant: delta,
     roots: [
-      { name: "x₁", value: x1, raw: x1Raw !== x1 ? x1Raw : null },
-      { name: "x₂", value: x2, raw: x2Raw !== x2 ? x2Raw : null }
+      createRoot("x₁", x1, x1Raw),
+      createRoot("x₂", x2, x2Raw)
     ]
   };
 }
@@ -225,8 +252,8 @@ export function calculateComplexRoots(a, b, c, format = "fractional") {
       isDoubleRoot: false,
       discriminant: delta,
       roots: [
-        { name: "x₁", value: r1, raw: null },
-        { name: "x₂", value: r2, raw: null }
+        createRoot("x₁", r1),
+        createRoot("x₂", r2)
       ]
     };
   }
@@ -269,8 +296,8 @@ export function calculateComplexRoots(a, b, c, format = "fractional") {
     isDoubleRoot: false,
     discriminant: delta,
     roots: [
-      { name: "x₁", value: x1, raw: x1Raw !== x1 ? x1Raw : null },
-      { name: "x₂", value: x2, raw: x2Raw !== x2 ? x2Raw : null }
+      createRoot("x₁", x1, x1Raw),
+      createRoot("x₂", x2, x2Raw)
     ]
   };
 }
